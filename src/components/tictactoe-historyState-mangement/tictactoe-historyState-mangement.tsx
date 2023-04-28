@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { Fragment, useCallback, useContext } from 'react';
 import TictactoeHistoryStateMangementCells from './tictactoe-historyState-mangement-cells/tictactoe-historyState-mangement-cells';
 import { HookContent } from '../hook-state-mangement/context/hookContext';
 
@@ -43,10 +43,12 @@ function tictactoeHistoryStateMangement (): JSX.Element {
                             } else {
                                 description = `Go to move #${tictactoeHistoryStateIndex}`;
                             }
-                            const { historyStateIndex } = tictactoeHistoryStateValue;
-                            return (<>
-                                <TictactoeHistoryStateMangementCells jumpToSpecificHistoryState = {jumpToSpecificHistoryState}  historyStateIndex = {historyStateIndex} description = {description} />
-                            </>);
+                            const { historyStateIndex, tictactoeCellrowIndex, tictactoeCellcolumnIndex } = tictactoeHistoryStateValue;
+                            return (
+                                // 此处给Fragment组件添加key值，来充分利用diff来优化处理列表组件的删除/修改/排序等操作。
+                                <Fragment key={`${tictactoeCellrowIndex}-${tictactoeCellcolumnIndex}`}>
+                                    <TictactoeHistoryStateMangementCells jumpToSpecificHistoryState = {jumpToSpecificHistoryState}  historyStateIndex = {historyStateIndex} description = {description} />
+                                </Fragment>);
                         })
                     }
                 </ol>

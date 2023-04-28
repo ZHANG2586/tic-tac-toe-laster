@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 interface tictactoeHistoryStateMangementCellsProp{
     jumpToSpecificHistoryState: (historyStateIndex: number)=>void;
@@ -17,10 +17,11 @@ function tictactoeHistoryStateMangementCells (props: tictactoeHistoryStateMangem
     function clickHistoryStateMangementCellsHandle () {
         jumpToSpecificHistoryState(historyStateIndex);
     }
-    return (<>
-        <li>
-            <button onClick={clickHistoryStateMangementCellsHandle}>{description}</button>
-        </li>
-    </>);
+    return (
+        <Fragment>
+            <li>
+                <button onClick={clickHistoryStateMangementCellsHandle}>{description}</button>
+            </li>
+        </Fragment>);
 }
 export default React.memo(tictactoeHistoryStateMangementCells);

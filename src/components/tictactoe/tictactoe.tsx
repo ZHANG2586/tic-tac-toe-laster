@@ -102,39 +102,26 @@ export function TictactoeGame (): JSX.Element {
             storesDate.tictactoeHistoryState = storesDate.tictactoeHistoryState.slice(0, storesDate.jumpToSpecificHistoryState + 1);
             storesDate.jumpToSpecificHistoryState = null;
         }
-        setCurrentState((preCurrentState) => {
-            if (!(sum % 2)) {
-                preCurrentState[rowIndex][columIndex] = 'X';
-                // 此处dispatch用于同步更新tictactoeCurrentState，使得modifyCurrentStates和statusShow在操作CurrentState时保持一致。
-                storesDate.tictactoeCurrentState = preCurrentState;
-                let WhetherToPush = true;
-                for (const HistoryStateCellsValue of storesDate.tictactoeHistoryState) {
-                    if (HistoryStateCellsValue.tictactoeCellrowIndex === rowIndex && HistoryStateCellsValue.tictactoeCellcolumnIndex === columIndex) {
-                        WhetherToPush = false;
-                    }
-                }
-                // 此处用于阻止react18以来在更新组件时，组件会进行一次加载一次卸载再次加载。防止给tictactoeHistoryState中重复添加元素。
-                if (WhetherToPush) {
-                    storesDate.tictactoeHistoryState.push({ tictactoeCellValue: 'X', tictactoeCellrowIndex: rowIndex, tictactoeCellcolumnIndex: columIndex, historyStateIndex: sum + 1 });
-                }
-                dispatch(storesDate);
-                return [...preCurrentState];
+        if (!(sum % 2)) {
+            CurrentState[rowIndex][columIndex] = 'X';
+        } else {
+            CurrentState[rowIndex][columIndex] = 'O';
+        }
+        storesDate.tictactoeCurrentState = CurrentState;
+        let WhetherToPush = true;
+        for (const HistoryStateCellsValue of storesDate.tictactoeHistoryState) {
+            if (HistoryStateCellsValue.tictactoeCellrowIndex === rowIndex && HistoryStateCellsValue.tictactoeCellcolumnIndex === columIndex) {
+                WhetherToPush = false;
             }
-            preCurrentState[rowIndex][columIndex] = 'O';
-            // 此处dispatch用于同步更新tictactoeCurrentState，使得modifyCurrentStates和statusShow在操作CurrentState时保持一致，不出现操作脏数据的情况。
-            storesDate.tictactoeCurrentState = preCurrentState;
-            let WhetherToPush = true;
-            for (const HistoryStateCellsValue of storesDate.tictactoeHistoryState) {
-                if (HistoryStateCellsValue.tictactoeCellrowIndex === rowIndex && HistoryStateCellsValue.tictactoeCellcolumnIndex === columIndex) {
-                    WhetherToPush = false;
-                }
-            }
-            // 此处用于阻止react在18以来在更新组件时，组件会进行一次加载一次卸载再次加载。防止给tictactoeHistoryState中重复添加元素。
-            if (WhetherToPush) {
-                storesDate.tictactoeHistoryState.push({ tictactoeCellValue: 'O', tictactoeCellrowIndex: rowIndex, tictactoeCellcolumnIndex: columIndex, historyStateIndex: sum + 1 });
-            }
-            dispatch(storesDate);
-            return [...preCurrentState];
+        }
+        // 此处用于阻止react18以来在更新组件时，组件会进行一次加载一次卸载再次加载。防止给tictactoeHistoryState中重复添加元素。
+        if (WhetherToPush) {
+            storesDate.tictactoeHistoryState.push({ tictactoeCellValue: 'X', tictactoeCellrowIndex: rowIndex, tictactoeCellcolumnIndex: columIndex, historyStateIndex: sum + 1 });
+        }
+        dispatch(storesDate);
+        // 此处把原本在setCurrentState里面做的一些副作用进行了抽离。为了避免在setCurrentState里面做一些引起其他组件重渲染的操作引起react警告。
+        setCurrentState((CurrentState) => {
+            return [...CurrentState];
         });
     };
 
